@@ -24,7 +24,9 @@ react-native link react-native-gesture-handler
 4. Open the console and 
 ```bash
 run npx react-native run-android
+```
 or
+```bash
 run npx react-native run-ios
 ```
 ## Contributing
