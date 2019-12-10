@@ -21,7 +21,12 @@ yarn add react-native-reanimated react-native-gesture-handler
 react-native link react-native-reanimated
 react-native link react-native-gesture-handler
 ```
-
+4. Open the console and 
+```bash
+run npx react-native run-android
+or
+run npx react-native run-ios
+```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
