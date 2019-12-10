@@ -1,6 +1,6 @@
 #  react-native-navigation-start
 
-![](https://imgflip.com/gif/3j1gb6)
+![](Examples/NavigationDrawer.gif)
 
 This package includes a Drawer Navigation template, using React-native 0.60, Native Base 2.13.0 and React-Navigation v.4. Take a look at the package.json file for more details.
 
