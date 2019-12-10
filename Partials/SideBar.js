@@ -61,82 +61,80 @@ class SideBar extends Component {
 
   render() {
     return (
-      <Container>
-        <Content
-          bounces={false}
-          style={{flex: 1, backgroundColor: '#fff', top: -1}}>
-          <ImageBackground
-            source={require('../Assets/bg.jpg')}
-            style={{
-              height: 120,
-              alignSelf: 'stretch',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          />
+      <View
+        bounces={false}
+        style={{flex: 1, backgroundColor: '#fff', top: -1}}>
+        <ImageBackground
+          source={require('../Assets/bg.jpg')}
+          style={{
+            height: 120,
+            alignSelf: 'stretch',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        />
 
-          <View
+        <View
+          style={{
+            padding: 20,
+            shadowColor: 'rgba(204, 204, 204, 0.1)',
+            shadowOffset: {
+              width: 0,
+              height: 1,
+            },
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
+            elevation: 1,
+            borderBottomWidth: 0.1,
+          }}>
+          <Text
             style={{
-              flex: 1,
-              padding: 20,
-              shadowColor: 'rgba(204, 204, 204, 0.1)',
-              shadowOffset: {
-                width: 0,
-                height: 1,
-              },
-              shadowOpacity: 0.22,
-              shadowRadius: 2.22,
-              elevation: 1,
-              borderBottomWidth: 0.1,
+              color: '#005293',
+              fontWeight: 'bold',
+              fontSize: 18,
+              textTransform: 'capitalize',
             }}>
-            <Text
-              style={{
-                color: '#005293',
-                fontWeight: 'bold',
-                fontSize: 18,
-                textTransform: 'capitalize',
+            Bienvenido
+          </Text>
+        </View>
+
+        <FlatList
+          scrollEnabled={false}
+          data={routes}
+          keyExtractor={item => item.route}
+          renderItem={({item}) => (
+            <ListItem
+              button
+              noBorder
+              onPress={() => {
+                this.props.navigation.navigate(item.route);
+                this.props.navigation.closeDrawer();
               }}>
-              Bienvenido
-            </Text>
-          </View>
+              <Left>
+                {item.type === 'image' ? (
+                  /*la iamgen de subastas del martillo es png asi que entonces ya no recibe variables tipo iconos workaround*/
+                  <Image
+                    style={{
+                      width: 20,
+                      height: 20,
+                    }}
+                    source={item.icon}
+                  />
+                ) : (
+                  <Icon
+                    active
+                    name={item.icon}
+                    style={{color: item.bg, fontSize: 20, width: 20}}
+                    type={item.type}
+                  />
+                )}
 
-          <FlatList
-            data={routes}
-            keyExtractor={item => item.route}
-            renderItem={({item}) => (
-              <ListItem
-                button
-                noBorder
-                onPress={() => {
-                  this.props.navigation.navigate(item.route);
-                  this.props.navigation.closeDrawer();
-                }}>
-                <Left>
-                  {item.type === 'image' ? (
-                    /*la iamgen de subastas del martillo es png asi que entonces ya no recibe variables tipo iconos workaround*/
-                    <Image
-                      style={{
-                        width: 20,
-                        height: 20,
-                      }}
-                      source={item.icon}
-                    />
-                  ) : (
-                    <Icon
-                      active
-                      name={item.icon}
-                      style={{color: item.bg, fontSize: 20, width: 20}}
-                      type={item.type}
-                    />
-                  )}
-
-                  <Text style={styles.text}>{item.name}</Text>
-                </Left>
-              </ListItem>
-            )}
-          />
-        </Content>
-      </Container>
+                <Text style={styles.text}>{item.name}</Text>
+              </Left>
+            </ListItem>
+          )}
+        />
+      </View>
     );
   }
 }

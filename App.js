@@ -51,8 +51,6 @@ const Screen2_StackNavigator = createStackNavigator({
   },
 });
 
-
-
 const HomeDrawerNavigator = createDrawerNavigator(
   {
     Home: {
