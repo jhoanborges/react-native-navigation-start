@@ -61,9 +61,7 @@ class SideBar extends Component {
 
   render() {
     return (
-      <View
-        bounces={false}
-        style={{flex: 1, backgroundColor: '#fff', top: -1}}>
+      <View bounces={false} style={{flex: 1, backgroundColor: '#fff', top: -1}}>
         <ImageBackground
           source={require('../Assets/bg.jpg')}
           style={{
