@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {ImageBackground, FlatList, View, Image, Linking} from 'react-native';
-import {Content, Text, ListItem, Icon, Container, Left} from 'native-base';
+import {Text, ListItem, Icon, Left} from 'native-base';
 import styles from './SideBarStyle';
 
 let cart = require('../Assets/cart.png');
