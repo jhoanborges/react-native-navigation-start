@@ -157,7 +157,7 @@ export default {
 
   // Footer
   footerHeight: 55,
-  footerDefaultBg: '#3F51B5',
+  footerDefaultBg: '#009FDA',
   footerPaddingBottom: 0,
 
   // FooterTab
@@ -166,7 +166,7 @@ export default {
   activeTab: '#fff',
   sTabBarActiveTextColor: '#007aff',
   tabBarActiveTextColor: '#fff',
-  tabActiveBgColor: '#3F51B5',
+  tabActiveBgColor: '#007aff',
 
   // Header
   toolbarBtnColor: '#fff',

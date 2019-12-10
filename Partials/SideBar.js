@@ -72,15 +72,8 @@ class SideBar extends Component {
               alignSelf: 'stretch',
               justifyContent: 'center',
               alignItems: 'center',
-            }}>
-            <View
-              style={{
-                backgroundColor: 'rgba(0,0,0,.6)',
-                height: 120,
-                width: '100%',
-              }}
-            />
-          </ImageBackground>
+            }}
+          />
 
           <View
             style={{

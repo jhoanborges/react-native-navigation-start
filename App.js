@@ -23,7 +23,7 @@ const Screen_StackNavigator = createStackNavigator({
   Home: {
     screen: Screen,
     navigationOptions: ({navigation}) => ({
-      title: 'Demo Screen 1',
+      title: 'Screen 1',
       headerTitleStyle: {
         marginLeft: 10,
       },
@@ -35,13 +35,31 @@ const Screen_StackNavigator = createStackNavigator({
   },
 });
 
+const Screen2_StackNavigator = createStackNavigator({
+  Screen2: {
+    screen: Screen2,
+    navigationOptions: ({navigation}) => ({
+      title: 'Screen 2',
+      headerTitleStyle: {
+        marginLeft: 10,
+      },
+      headerStyle: {
+        backgroundColor: '#009FDA',
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
+
+
 const HomeDrawerNavigator = createDrawerNavigator(
   {
     Home: {
       screen: Screen_StackNavigator,
     },
     Screen2: {
-      screen: Screen2,
+      screen: Screen2_StackNavigator,
     },
   },
   {
@@ -67,6 +85,7 @@ class App extends Component {
               this.navigator = nav;
             }}
           />
+
         </Root>
       </StyleProvider>
     );

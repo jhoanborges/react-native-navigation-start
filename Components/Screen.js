@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
+import {StyleSheet, Text, Button} from 'react-native';
+import FooterTabs from '../Partials/FooterTabs';
+import {Container, Content} from 'native-base';
 
 class Screen extends Component {
   toggleDrawer = () => {
@@ -8,15 +10,18 @@ class Screen extends Component {
 
   render() {
     return (
-      <View style={styles.MainContainer}>
-        <Text style={{fontSize: 23}}> Screen 1 </Text>
+      <Container>
+        <Content contentContainerStyle={styles.MainContainer}>
+          <Text style={{fontSize: 23}}> Screen 1 </Text>
 
-        <Button
-          transparent
-          onPress={this.toggleDrawer.bind(this)}
-          title="Go to drawer"
-        />
-      </View>
+          <Button
+            transparent
+            onPress={this.toggleDrawer.bind(this)}
+            title="Go to drawer"
+          />
+        </Content>
+        <FooterTabs />
+      </Container>
     );
   }
 }
@@ -24,9 +29,7 @@ class Screen extends Component {
 const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
-    paddingTop: 20,
     alignItems: 'center',
-    marginTop: 50,
     justifyContent: 'center',
   },
 });
