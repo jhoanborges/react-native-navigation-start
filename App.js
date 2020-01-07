@@ -6,8 +6,8 @@
  * @flow
  */
 
-import React, {Component, useEffect } from 'react';
-import SplashScreen from 'react-native-splash-screen'
+import React, {Component, useEffect} from 'react';
+import RNBootSplash from 'react-native-bootsplash';
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import SideBar from './Partials/SideBar';
 import Screen from './Components/Screen';
@@ -68,16 +68,13 @@ const HomeDrawerNavigator = createDrawerNavigator(
 
 const AppContainer = createAppContainer(HomeDrawerNavigator);
 
-
-
-
 class App extends Component {
   constructor(props) {
     super(props);
     //this.state = {}
   }
-  componentDidMount(){
-    SplashScreen.hide();
+  componentDidMount() {
+    RNBootSplash.hide({duration: 1000});
   }
 
   render() {
@@ -94,5 +91,30 @@ class App extends Component {
     );
   }
 }
+/*
+function App() {
+  let init = async () => {
+    // …do multiple async tasks
+  };
 
+  useEffect(() => {
+    init().finally(() => {
+      // without fadeout: RNBootSplash.hide()
+      RNBootSplash.hide({duration: 1000});
+    });
+  }, []);
+
+  return (
+    <StyleProvider style={getTheme(material)}>
+      <Root>
+        <AppContainer
+          ref={nav => {
+            this.navigator = nav;
+          }}
+        />
+      </Root>
+    </StyleProvider>
+  );
+}
+*/
 export default App;
