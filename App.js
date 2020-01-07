@@ -6,8 +6,8 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Text} from 'react-native';
+import React, {Component, useEffect } from 'react';
+import SplashScreen from 'react-native-splash-screen'
 import {createDrawerNavigator} from 'react-navigation-drawer';
 import SideBar from './Partials/SideBar';
 import Screen from './Components/Screen';
@@ -68,10 +68,16 @@ const HomeDrawerNavigator = createDrawerNavigator(
 
 const AppContainer = createAppContainer(HomeDrawerNavigator);
 
+
+
+
 class App extends Component {
   constructor(props) {
     super(props);
     //this.state = {}
+  }
+  componentDidMount(){
+    SplashScreen.hide();
   }
 
   render() {
@@ -83,7 +89,6 @@ class App extends Component {
               this.navigator = nav;
             }}
           />
-
         </Root>
       </StyleProvider>
     );
