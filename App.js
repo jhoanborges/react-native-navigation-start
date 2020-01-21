@@ -1,11 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, {Component, useEffect} from 'react';
 import RNBootSplash from 'react-native-bootsplash';
 import {createDrawerNavigator} from 'react-navigation-drawer';
@@ -18,6 +10,19 @@ import {StyleProvider, Root} from 'native-base';
 import getTheme from './native-base-theme/components';
 import material from './native-base-theme/variables/material';
 import {createStackNavigator} from 'react-navigation-stack';
+//Redux dependencies
+import {Provider} from 'react-redux';
+import {createStore, combineReducers, applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
+
+import {userDataReducer} from './Redux/Reducers/Reducer';
+
+const store = createStore(
+  combineReducers({
+    userdata: userDataReducer,
+  }),
+  applyMiddleware(thunk),
+);
 
 const Screen_StackNavigator = createStackNavigator({
   Home: {
@@ -81,11 +86,13 @@ class App extends Component {
     return (
       <StyleProvider style={getTheme(material)}>
         <Root>
-          <AppContainer
-            ref={nav => {
-              this.navigator = nav;
-            }}
-          />
+          <Provider store={store}>
+            <AppContainer
+              ref={nav => {
+                this.navigator = nav;
+              }}
+            />
+          </Provider>
         </Root>
       </StyleProvider>
     );

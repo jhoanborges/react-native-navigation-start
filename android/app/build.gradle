@@ -195,7 +195,7 @@ dependencies {
     }
 }
 
-// Run this once to be able to run the application with BUCK
+// Run this once to be able to run the application with BUCKbuildscript
 // puts all compile dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
