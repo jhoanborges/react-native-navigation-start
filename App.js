@@ -297,6 +297,7 @@ function App() {
 
   return (
     <StyleProvider style={getTheme(material)}>
+      <Provider store={store}>
         <Root>
           <AuthContext.Provider value={authContext}>
             <NavigationContainer>
@@ -318,6 +319,7 @@ function App() {
             </NavigationContainer>
           </AuthContext.Provider>
         </Root>
+        </Provider>
     </StyleProvider>
   );
 }
