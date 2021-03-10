@@ -29,6 +29,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import SideBar from './Partials/SideBar';
 import {HeaderBackButton} from '@react-navigation/stack';
 import {createStackNavigator} from '@react-navigation/stack';
+import COLORS from './Colors';
 
 function CustomDrawerContent(props) {
   return <SideBar {...props} />;
@@ -72,7 +73,7 @@ function LoginComponent({navigation}) {
             textAlign: 'center',
             fontWeight: 'bold',
             marginBottom: 10,
-            color: '#005293',
+            color: COLORS.blue,
           }}>
           {' '}
           Iniciar Sesión
@@ -295,7 +296,7 @@ function App() {
             ),
             title: 'My home',
             headerStyle: {
-              backgroundColor: '#ff5e00',
+              backgroundColor: COLORS.blue,
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
