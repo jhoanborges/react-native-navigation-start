@@ -9,48 +9,29 @@ import material from './native-base-theme/variables/material';
 import {Provider} from 'react-redux';
 import {createStore, combineReducers, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
-
 import {userDataReducer} from './Redux/Reducers/Reducer';
 import axios from 'axios';
 import {Toast} from 'native-base';
-
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  ActivityIndicator,
-  Image,
-} from 'react-native';
+import {StyleSheet, View, ActivityIndicator, Image} from 'react-native';
 import {
   Container,
   Text,
   Button,
-  Content,
-  Form,
   Label,
   Item as FormItem,
   Input,
 } from 'native-base';
 import {useForm, Controller} from 'react-hook-form';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {bindActionCreators} from 'redux';
-import fetchUserData from './Redux/Services/fetchUserData';
-import {useDispatch, useSelector} from 'react-redux';
-//import fetchUserData from '../Redux/Services/fetchUserData'
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from '@react-navigation/drawer';
 import SideBar from './Partials/SideBar';
+import {HeaderBackButton} from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 
 function CustomDrawerContent(props) {
-  return (
-      <SideBar {...props} />
-  );
+  return <SideBar {...props} />;
 }
 
 const AuthContext = React.createContext();
@@ -140,7 +121,7 @@ function LoginComponent({navigation}) {
             style={{width: 25, height: 25}}
             source={require('./Assets/mail.png')}
           />
-          <Text style={{color: '#009FDA', fontSize: 20, fontWeight: 'bold'}}>
+          <Text style={{color: '#ff5e00', fontSize: 20, fontWeight: 'bold'}}>
             Login
           </Text>
         </Button>
@@ -295,6 +276,38 @@ function App() {
     );
   }
 
+  const Stack = createStackNavigator();
+
+  function RootScreen({navigation}) {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name="RootScreen"
+          component={Screen}
+          options={{
+            headerLeft: props => (
+              <HeaderBackButton
+                {...props}
+                onPress={() => {
+                  navigation.navigate('Screen2');
+                }}
+              />
+            ),
+            title: 'My home',
+            headerStyle: {
+              backgroundColor: '#ff5e00',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Stack.Screen name="Screen2" component={Screen2} />
+      </Stack.Navigator>
+    );
+  }
+
   return (
     <StyleProvider style={getTheme(material)}>
       <Provider store={store}>
@@ -303,8 +316,7 @@ function App() {
             <NavigationContainer>
               <Drawer.Navigator
                 initialRouteName="Home"
-                drawerContent={props => <CustomDrawerContent {...props} />}
-                >
+                drawerContent={props => <CustomDrawerContent {...props} />}>
                 {state.isLoading ? (
                   // We haven't finished checking for the token yet
                   <Drawer.Screen name="Splash" component={SplashScreen} />
@@ -313,13 +325,13 @@ function App() {
                   <Drawer.Screen name="Login" component={LoginComponent} />
                 ) : (
                   // User is signed in
-                  <Drawer.Screen name="Home" component={Screen} />
+                  <Drawer.Screen name="Home" component={RootScreen} />
                 )}
               </Drawer.Navigator>
             </NavigationContainer>
           </AuthContext.Provider>
         </Root>
-        </Provider>
+      </Provider>
     </StyleProvider>
   );
 }
