@@ -1,12 +1,8 @@
-import React, {Component, useEffect} from 'react';
-import { View, Text } from "react-native";
-import RNBootSplash from "react-native-bootsplash";
-
-import SideBar from './Partials/SideBar';
-import LoginComponent from './Components/LoginComponent';
+import React, {Component, useEffect, useState} from 'react';
+import RNBootSplash from 'react-native-bootsplash';
 import Screen from './Components/Screen';
 import Screen2 from './Components/Screen2';
-import {StyleProvider, Root, Button} from 'native-base';
+import {StyleProvider, Root} from 'native-base';
 import getTheme from './native-base-theme/components';
 import material from './native-base-theme/variables/material';
 //Redux dependencies
@@ -15,10 +11,49 @@ import {createStore, combineReducers, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 
 import {userDataReducer} from './Redux/Reducers/Reducer';
+import axios from 'axios';
+import {Toast} from 'native-base';
 
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {NavigationContainer} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  ActivityIndicator,
+  Image,
+} from 'react-native';
+import {
+  Container,
+  Text,
+  Button,
+  Content,
+  Form,
+  Label,
+  Item as FormItem,
+  Input,
+} from 'native-base';
+import {useForm, Controller} from 'react-hook-form';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {bindActionCreators} from 'redux';
+import fetchUserData from './Redux/Services/fetchUserData';
+import {useDispatch, useSelector} from 'react-redux';
+//import fetchUserData from '../Redux/Services/fetchUserData'
+import {
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerItem,
+} from '@react-navigation/drawer';
+import SideBar from './Partials/SideBar';
 
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
+function CustomDrawerContent(props) {
+  return (
+      <SideBar {...props} />
+  );
+}
+
+const AuthContext = React.createContext();
 
 const store = createStore(
   combineReducers({
@@ -26,108 +61,217 @@ const store = createStore(
   }),
   applyMiddleware(thunk),
 );
-/*
-const Screen_StackNavigator = createStackNavigator({
-  Home: {
-    screen: Screen,
-    navigationOptions: ({navigation}) => ({
-      title: 'Screen 1',
-      headerTitleStyle: {
-        marginLeft: 10,
-      },
-      headerStyle: {
-        backgroundColor: '#009FDA',
-      },
-      headerTintColor: '#fff',
-    }),
-  },
-});
 
-const Screen2_StackNavigator = createStackNavigator({
-  Screen2: {
-    screen: Screen2,
-    navigationOptions: ({navigation}) => ({
-      title: 'Screen 2',
-      headerTitleStyle: {
-        marginLeft: 10,
-      },
-      headerStyle: {
-        backgroundColor: '#009FDA',
-      },
-      headerTintColor: '#fff',
-    }),
-  },
-});
+function LoginComponent({navigation}) {
+  const [loading, setLoading] = useState(false);
 
-const HomeDrawerNavigator = createDrawerNavigator(
-  {
-    Home: {
-      screen: Screen_StackNavigator,
-    },
-    Screen2: {
-      screen: Screen2_StackNavigator,
-    },
-  },
-  {
-    initialRouteName: 'Home',
-    contentComponent: props => <SideBar {...props} />,
-  },
-);
+  const {control, handleSubmit, errors} = useForm();
+  const {signIn} = React.useContext(AuthContext);
 
-const AppContainer = createAppContainer(HomeDrawerNavigator);
+  const onSubmit = data => {
+    signIn(data.email, data.password);
+  };
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    //this.state = {}
-  }
-  componentDidMount() {
-    RNBootSplash.hide({duration: 1000});
-  }
-
-  render() {
-    return (
-      <StyleProvider style={getTheme(material)}>
-        <Root>
-          <Provider store={store}>
-            <AppContainer
-              ref={nav => {
-                this.navigator = nav;
-              }}
-            />
-          </Provider>
-        </Root>
-      </StyleProvider>
-    );
-  }
-}
-
-export default App;
-*/
-
-
-function HomeScreen({ navigation }) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button
-        onPress={() => navigation.navigate('Notifications')}
-        title="Go to notifications"
-      />
-    </View>
+    <Container style={styles.content}>
+      <View style={styles.MainContainer}>
+        <Spinner
+          visible={loading}
+          customIndicator={<ActivityIndicator size="large" />}
+        />
+
+        <Image
+          style={{width: 250, height: 260, marginBottom: 20, marginTop: 10}}
+          source={require('./Assets/login.png')}
+        />
+
+        <Text
+          style={{
+            fontSize: 23,
+            textAlign: 'center',
+            fontWeight: 'bold',
+            marginBottom: 10,
+            color: '#005293',
+          }}>
+          {' '}
+          Iniciar Sesión
+        </Text>
+
+        <Controller
+          control={control}
+          rules={{required: true}}
+          render={({onChange, onBlur, value}) => (
+            <FormItem floatingLabel>
+              <Label>Usuario</Label>
+              <Input onChangeText={value => onChange(value)} value={value} />
+            </FormItem>
+          )}
+          name="email"
+          defaultValue=""
+        />
+        {errors.email && (
+          <Text style={styles.error}>El campo email es requerido.</Text>
+        )}
+
+        <Controller
+          control={control}
+          rules={{required: true}}
+          render={({onChange, onBlur, value}) => (
+            <FormItem floatingLabel>
+              <Label>Contraseña</Label>
+              <Input onChangeText={value => onChange(value)} value={value} />
+            </FormItem>
+          )}
+          name="password"
+          defaultValue=""
+        />
+        {errors.password && (
+          <Text style={styles.error}>El campo contraseña es requerido.</Text>
+        )}
+
+        <Button
+          style={{marginTop: 30, width: '100%'}}
+          block
+          bordered
+          onPress={handleSubmit(onSubmit)}
+          //onPress={() => onFormSubmit()}
+        >
+          <Image
+            style={{width: 25, height: 25}}
+            source={require('./Assets/mail.png')}
+          />
+          <Text style={{color: '#009FDA', fontSize: 20, fontWeight: 'bold'}}>
+            Login
+          </Text>
+        </Button>
+      </View>
+    </Container>
   );
 }
 
-function NotificationsScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button onPress={() => navigation.goBack()} title="Go back home" />
-    </View>
-  );
-}
+const styles = StyleSheet.create({
+  MainContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  content: {
+    paddingLeft: 40,
+    paddingRight: 40,
+  },
+  error: {
+    textAlign: 'left',
+    justifyContent: 'flex-start',
+    color: '#bf1650',
+  },
+});
 
 const Drawer = createDrawerNavigator();
 
 function App() {
+  //login token
+  const [state, dispatch] = React.useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    },
+  );
+
+  React.useEffect(() => {
+    // Fetch the token from storage then navigate to our appropriate place
+    const bootstrapAsync = async () => {
+      let userToken;
+
+      try {
+        userToken = await AsyncStorage.getItem('token');
+      } catch (e) {
+        // Restoring token failed
+      }
+      console.log('Token de usuario encontrado');
+      console.log(userToken);
+      // After restoring token, we may need to validate it in production apps
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      dispatch({type: 'RESTORE_TOKEN', token: userToken});
+    };
+
+    bootstrapAsync();
+  }, []);
+
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (email, password) => {
+        // In a production app, we need to send some data (usually username, password) to server and get a token
+        // We will also need to handle errors if sign in failed
+        // After getting token, we need to persist the token using `AsyncStorage`
+        // In the example, we'll use a dummy token
+        console.log(email);
+        await axios
+          .post('https://developer.e-hop.mx/api/login', {
+            email: email,
+            password: password,
+          })
+          .then(async res => {
+            if (res.error) {
+              throw res;
+            }
+            console.log(res.data);
+
+            try {
+              await AsyncStorage.setItem('token', res.data.token);
+              console.log('saved token');
+            } catch (e) {
+              console.log(e);
+              // saving error
+            }
+            dispatch({type: 'SIGN_IN', token: res.data.token});
+            return res;
+          })
+          .catch(error => {
+            console.log(error);
+
+            Toast.show({
+              text: error.message,
+              buttonText: 'Ok',
+              duration: 5000,
+            });
+          });
+      },
+      signOut: () => dispatch({type: 'SIGN_OUT'}),
+      signUp: async data => {
+        // In a production app, we need to send user data to server and get a token
+        // We will also need to handle errors if sign up failed
+        // After getting token, we need to persist the token using `AsyncStorage`
+        // In the example, we'll use a dummy token
+        dispatch({type: 'SIGN_IN', token: 'dummy-auth-token'});
+      },
+    }),
+    [],
+  );
 
   useEffect(() => {
     const init = async () => {
@@ -135,27 +279,47 @@ function App() {
     };
 
     init().finally(async () => {
-      await RNBootSplash.hide({ fade: true });
-      console.log("Bootsplash has been hidden successfully");
+      await RNBootSplash.hide({fade: true});
+      console.log('Bootsplash has been hidden successfully');
     });
   }, []);
 
+  function SplashScreen() {
+    return (
+      <View style={styles.MainContainer}>
+        <Spinner
+          visible={true}
+          customIndicator={<ActivityIndicator size="large" />}
+        />
+      </View>
+    );
+  }
 
   return (
     <StyleProvider style={getTheme(material)}>
-    <Root>
-      <Provider store={store}>
-    <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Login">
-        <Drawer.Screen name="Login" component={LoginComponent} />
-        <Drawer.Screen name="Home" component={Screen} />
-        <Drawer.Screen name="Notifications" component={NotificationsScreen} />
-      </Drawer.Navigator>
-    </NavigationContainer>
-    </Provider>
+        <Root>
+          <AuthContext.Provider value={authContext}>
+            <NavigationContainer>
+              <Drawer.Navigator
+                initialRouteName="Home"
+                drawerContent={props => <CustomDrawerContent {...props} />}
+                >
+                {state.isLoading ? (
+                  // We haven't finished checking for the token yet
+                  <Drawer.Screen name="Splash" component={SplashScreen} />
+                ) : state.userToken == null ? (
+                  // No token found, user isn't signed in
+                  <Drawer.Screen name="Login" component={LoginComponent} />
+                ) : (
+                  // User is signed in
+                  <Drawer.Screen name="Home" component={Screen} />
+                )}
+              </Drawer.Navigator>
+            </NavigationContainer>
+          </AuthContext.Provider>
         </Root>
-      </StyleProvider>
+    </StyleProvider>
   );
 }
 
-export default  App
+export default App;

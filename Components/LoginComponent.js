@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Image, TextInput} from 'react-native';
+import {StyleSheet, View, Image, TextInput, ActivityIndicator} from 'react-native';
 import {
   Container,
   Text,
@@ -11,29 +11,53 @@ import {
   Input,
 } from 'native-base';
 import {useForm, Controller} from 'react-hook-form';
-import RNBootSplash from 'react-native-bootsplash';
+import Spinner from 'react-native-loading-spinner-overlay';
+import { bindActionCreators } from 'redux';
+
+import { useDispatch, useSelector } from "react-redux";
+import fetchUserData from '../Redux/Services/fetchUserData'
 
 function LoginComponent({navigation}) {
+
+
   useEffect(() => {
     const init = async () => {
       // …do multiple sync or async tasks
     };
 
     init().finally(async () => {
-      await RNBootSplash.hide({fade: true});
-      console.log('Bootsplash has been hidden successfully');
+        console.log('login mounted')
     });
   }, []);
 
-  //const [email, handleChangeEmail] = useState('jhoan.borges@e-hop.mx');
-  const [password, handleChangePassword] = useState('12345678');
+
+  const userdata = useSelector(state => state.userdata)
+  const dispatch = useDispatch();
+
+
+  const [loading, setLoading] = useState(false);
 
   const {control, handleSubmit, errors} = useForm();
-  const onSubmit = data => console.log(data);
+
+  const onSubmit = data => {
+    setLoading(true)
+    dispatch(fetchUserData(data.email, data.password) )
+
+    setTimeout(() => {
+        setLoading(false)     
+    }, 500);
+
+
+  }
 
   return (
     <Container style={styles.content}>
       <View style={styles.MainContainer}>
+          <Spinner
+          visible={loading}
+          customIndicator={<ActivityIndicator size="large"/>}
+        />
+
         <Image
           style={{width: 250, height: 260, marginBottom: 20, marginTop: 10}}
           source={require('../Assets/login.png')}
@@ -57,13 +81,15 @@ function LoginComponent({navigation}) {
           render={({onChange, onBlur, value}) => (
             <FormItem floatingLabel>
               <Label>Usuario</Label>
-              <Input onChangeText={value => onChange(value)} value={value} />
+              <Input onChangeText={value => onChange(value)} 
+              value={value} 
+              />
             </FormItem>
           )}
           name="email"
           defaultValue=""
         />
-        {errors.email && <Text style={styles.error}>This is required.</Text>}
+        {errors.email && <Text style={styles.error}>El campo email es requerido.</Text>}
 
         <Controller
           control={control}
@@ -77,7 +103,7 @@ function LoginComponent({navigation}) {
           name="password"
           defaultValue=""
         />
-        {errors.password && <Text style={styles.error}>This is required.</Text>}
+        {errors.password && <Text style={styles.error}>El campo contraseña es requerido.</Text>}
 
 
 
@@ -119,4 +145,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginComponent;
+
+
+export default LoginComponent
